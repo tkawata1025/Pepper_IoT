@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3">
+    <Box name="root" id="-1" localization="8" tooltip="Root box of Choregraphe&apos;s behavior. Highest level possible." x="0" y="0">
+        <bitmap>media/images/box/root.png</bitmap>
+        <script language="4">
+            <content>
+                <![CDATA[]]>
+</content>
+        </script>
+        <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+        <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+        <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+        <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="ボックスBehaviorの終了時に信号を送る。" id="4" />
+        <Timeline enable="0">
+            <BehaviorLayer name="behavior_layer1">
+                <BehaviorKeyframe name="keyframe1" index="1">
+                    <Diagram>
+                        <Box name="iRemocon ステータス" id="1" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="164" y="61">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        #put initialization code here
+        pass
+
+    def onUnload(self):
+        #put clean-up code here
+        pass
+
+    def onInput_onStart(self):
+        import socket
+
+        try:
+            HOST = self.getParameter("IP Address")
+            PORT = 51013
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((HOST, PORT))
+            s.send('*au\r\n')
+            data = s.recv(1024)
+            s.close()
+            if str(data) == 'ok\r\n':
+                self.onSuccess()
+            else:
+                self.onFail("iRemocon returned : " + repr(data))
+
+        except socket.error, msg:
+            self.onFail(str(msg))
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onSuccess() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onSuccess" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" />
+                            <Output name="onFail" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" />
+                            <Parameter name="IP Address" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Log" id="2" localization="8" tooltip="Prompt the message in the debug window. You can set a prefix and a priority&#x0A;for the message in the parameters." x="437" y="134">
+                            <bitmap>media/images/box/print.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_message(self, p):
+        sPriority = self.getParameter("Priority")
+        sMessage = self.getParameter("Message prefix")
+        if( sMessage != "" and p != None ):
+            sMessage += ": "
+        if( p != None ):
+            sMessage += str(p)
+        if( sPriority == "Fatal" ):
+            self.logger.fatal( sMessage )
+        elif( sPriority == "Error" ):
+            self.logger.error( sMessage )
+        elif( sPriority == "Warning" ):
+            self.logger.warning( sMessage )
+        elif( sPriority == "Info" ):
+            self.logger.info( sMessage )
+        elif( sPriority == "Debug" ):
+            self.logger.debug( sMessage )
+        self.onDone()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="message" type="0" type_size="1" nature="1" inner="0" tooltip='The message to print or a &quot;Bang&quot; to only print the message set as parameter.' id="2" />
+                            <Output name="onDone" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when box behavior is finished." id="3" />
+                            <Parameter name="Message prefix" inherits_from_parent="0" content_type="3" value="Message text" default_value="Message text" custom_choice="0" tooltip="Enter the text you want to print before the input message." id="4" />
+                            <Parameter name="Priority" inherits_from_parent="0" content_type="3" value="Info" default_value="Info" custom_choice="0" tooltip="Enter the priority of your message. If you select error, the box will get red when it will be stimulated." id="5">
+                                <Choice value="Fatal" />
+                                <Choice value="Error" />
+                                <Choice value="Warning" />
+                                <Choice value="Info" />
+                                <Choice value="Debug" />
+                            </Parameter>
+                        </Box>
+                        <Box name="iRemocon 送信" id="3" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="167" y="171">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        self.socket = None
+
+    def onUnload(self):
+
+        if self.socket != None:
+            self.socket.close()
+
+    def onInput_onStart(self):
+        import socket
+
+        try:
+
+            HOST = self.getParameter("IP Address")
+            code = self.getParameter("code name")
+            PORT = 51013
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect((HOST, PORT))
+            self.socket.send('*is;%s\r\n' % code)
+            data = self.socket.recv(1024)
+            self.socket.close()
+            self.socket = None
+
+            if str(data) == 'is;ok\r\n':
+                self.onSuccess()
+            else:
+                self.socket = None
+                self.onFail("iRemocon returned : " + repr(data))
+
+        except socket.error, msg:
+            self.onFail(str(msg))
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onSuccess()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onSuccess" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" />
+                            <Output name="onFail" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" />
+                            <Parameter name="IP Address" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="code name" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" />
+                        </Box>
+                        <Box name="iRemocon 学習" id="4" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="168" y="281">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        #put initialization code here
+        pass
+
+    def onUnload(self):
+        #put clean-up code here
+        pass
+
+    def onInput_onStart(self):
+        import socket
+
+        try:
+            HOST = self.getParameter("IP Address")
+            code = self.getParameter("code name")
+            PORT = 51013
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((HOST, PORT))
+            s.send('*ic;%s\r\n' % code)
+            data = s.recv(1024)
+            s.close()
+
+            if str(data) == 'ic;ok\r\n':
+                self.logger.info("iRemocon study success..")
+                self.onSuccess()
+            else:
+                self.onFail("iRemocon returned : " + repr(data))
+
+        except socket.error, msg:
+            self.onFail(str(msg))
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onSuccess() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onSuccess" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" />
+                            <Output name="onFail" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" />
+                            <Parameter name="IP Address" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="code name" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" />
+                        </Box>
+                        <Box name="+_上向きガッツ" id="230" localization="8" tooltip="Enter tooltip here" x="442" y="258">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="ボックス動作の終了時に信号を送る" id="4" />
+                            <Timeline enable="1" fps="25" start_frame="1" end_frame="60" size="60">
+                                <ActuatorList model="">
+                                    <ActuatorCurve name="value" actuator="HeadPitch" recordable="0" mute="0" unit="0">
+                                        <Key frame="19" value="-11.1" />
+                                        <Key frame="24" value="8.5" />
+                                        <Key frame="29" value="-11.1" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LElbowRoll" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="-77.4" />
+                                        <Key frame="38" value="-77.4" />
+                                        <Key frame="60" value="-84.5508" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LElbowYaw" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="-97.9969" />
+                                        <Key frame="38" value="-97.9969" />
+                                        <Key frame="60" value="-6.24024" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LShoulderPitch" recordable="0" mute="0" unit="0">
+                                        <Key frame="18" value="69.4" />
+                                        <Key frame="23" value="82.3" />
+                                        <Key frame="28" value="69.4" />
+                                        <Key frame="38" value="69.4" />
+                                        <Key frame="60" value="81.3867" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LShoulderRoll" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="0.5" />
+                                        <Key frame="38" value="0.5" />
+                                        <Key frame="50" value="46" />
+                                        <Key frame="60" value="51.9434" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LWristYaw" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="-25.3104" />
+                                        <Key frame="38" value="-25.3104" />
+                                        <Key frame="60" value="-87" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RElbowRoll" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="77.4" />
+                                        <Key frame="38" value="77.4" />
+                                        <Key frame="60" value="84.6387" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RElbowYaw" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="97.9969" />
+                                        <Key frame="38" value="97.9969" />
+                                        <Key frame="60" value="6.24024" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RShoulderPitch" recordable="0" mute="0" unit="0">
+                                        <Key frame="18" value="69.4" />
+                                        <Key frame="23" value="82.3" />
+                                        <Key frame="28" value="69.4" />
+                                        <Key frame="38" value="69.4" />
+                                        <Key frame="60" value="81.6504" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RShoulderRoll" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="-0.5" />
+                                        <Key frame="38" value="-0.5" />
+                                        <Key frame="50" value="-46" />
+                                        <Key frame="60" value="-51.9434" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RWristYaw" recordable="0" mute="0" unit="0">
+                                        <Key frame="16" value="25.3104" />
+                                        <Key frame="38" value="25.3104" />
+                                        <Key frame="60" value="87" />
+                                    </ActuatorCurve>
+                                </ActuatorList>
+                            </Timeline>
+                        </Box>
+                        <Box name="iRemocon 照度 湿度 温度" id="5" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="169" y="395">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        #put initialization code here
+        pass
+
+    def onUnload(self):
+        #put clean-up code here
+        pass
+
+    def onInput_onStart(self):
+        import socket
+
+        try:
+            HOST = self.getParameter("IP Address")
+            PORT = 51013
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((HOST, PORT))
+            s.send('*se\r\n')
+            data = s.recv(1024)
+            s.close()
+
+            if str(data).find("se;ok") == 0:
+                r = str(data).split(";")
+                if len(r) == 5:
+                    self.lu(float(r[2]))
+                    self.hu(float(r[3]))
+                    self.te(float(r[4]))
+                else:
+                    self.onFail("iRemocon invalid result")
+            else:
+                self.onFail("iRemocon returned : " + repr(data))
+
+        except socket.error, msg:
+            self.onFail(str(msg))
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onSuccess() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="lu" type="2" type_size="1" nature="1" inner="0" tooltip="明るさ（ルクス）を出力します&#x0A;0  〜 110000.00 の数値です&#x0A;" id="4" />
+                            <Output name="hu" type="2" type_size="1" nature="1" inner="0" tooltip="湿度を出力します" id="5" />
+                            <Output name="te" type="2" type_size="1" nature="1" inner="0" tooltip="温度を出力します" id="6" />
+                            <Output name="onFail" type="3" type_size="1" nature="1" inner="0" tooltip="" id="7" />
+                            <Parameter name="IP Address" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="8" />
+                        </Box>
+                        <Link inputowner="2" indexofinput="2" outputowner="1" indexofoutput="5" />
+                        <Link inputowner="2" indexofinput="2" outputowner="3" indexofoutput="5" />
+                        <Link inputowner="2" indexofinput="2" outputowner="4" indexofoutput="5" />
+                        <Link inputowner="230" indexofinput="2" outputowner="3" indexofoutput="4" />
+                        <Link inputowner="230" indexofinput="2" outputowner="4" indexofoutput="4" />
+                        <Link inputowner="230" indexofinput="2" outputowner="1" indexofoutput="4" />
+                    </Diagram>
+                </BehaviorKeyframe>
+            </BehaviorLayer>
+        </Timeline>
+    </Box>
+</ChoregrapheProject>
