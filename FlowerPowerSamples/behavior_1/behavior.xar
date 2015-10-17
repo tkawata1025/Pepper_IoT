@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3">
+    <Box name="root" id="-1" localization="8" tooltip="Root box of Choregraphe&apos;s behavior. Highest level possible." x="0" y="0">
+        <bitmap>media/images/box/root.png</bitmap>
+        <script language="4">
+            <content>
+                <![CDATA[]]>
+</content>
+        </script>
+        <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+        <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+        <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+        <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="ボックスBehaviorの終了時に信号を送る。" id="4" />
+        <Timeline enable="0">
+            <BehaviorLayer name="behavior_layer1">
+                <BehaviorKeyframe name="keyframe1" index="1">
+                    <Diagram>
+                        <Box name="Log" id="3" localization="8" tooltip="Prompt the message in the debug window. You can set a prefix and a priority&#x0A;for the message in the parameters." x="599" y="46">
+                            <bitmap>media/images/box/print.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_message(self, p):
+        sPriority = self.getParameter("Priority")
+        sMessage = self.getParameter("Message prefix")
+        if( sMessage != "" and p != None ):
+            sMessage += ": "
+        if( p != None ):
+            sMessage += str(p)
+        if( sPriority == "Fatal" ):
+            self.logger.fatal( sMessage )
+        elif( sPriority == "Error" ):
+            self.logger.error( sMessage )
+        elif( sPriority == "Warning" ):
+            self.logger.warning( sMessage )
+        elif( sPriority == "Info" ):
+            self.logger.info( sMessage )
+        elif( sPriority == "Debug" ):
+            self.logger.debug( sMessage )
+        self.onDone()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="message" type="0" type_size="1" nature="1" inner="0" tooltip='The message to print or a &quot;Bang&quot; to only print the message set as parameter.' id="2" />
+                            <Output name="onDone" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when box behavior is finished." id="3" />
+                            <Parameter name="Message prefix" inherits_from_parent="0" content_type="3" value="Message text" default_value="Message text" custom_choice="0" tooltip="Enter the text you want to print before the input message." id="4" />
+                            <Parameter name="Priority" inherits_from_parent="0" content_type="3" value="Info" default_value="Info" custom_choice="0" tooltip="Enter the priority of your message. If you select error, the box will get red when it will be stimulated." id="5">
+                                <Choice value="Fatal" />
+                                <Choice value="Error" />
+                                <Choice value="Warning" />
+                                <Choice value="Info" />
+                                <Choice value="Debug" />
+                            </Parameter>
+                        </Box>
+                        <Box name="FlowerPower 認証" id="2" localization="8" tooltip="FlowerPower 認証&#x0A;&#x0A;アプリ内で１回だけ実行" x="162" y="33">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        self.framemanager = ALProxy("ALFrameManager")
+        self.folderName = os.path.join(self.framemanager.getBehaviorPath(self.behaviorId), "../lib")
+        if self.folderName not in sys.path:
+            sys.path.append(self.folderName)
+
+    def onUnload(self):
+
+        if self.folderName and self.folderName in sys.path:
+            sys.path.remove(self.folderName)
+        self.folderName = None
+
+    def onInput_onStart(self):
+        import requests
+        #from pprint import pformat  # here only for aesthetic
+
+        # First we set our credentials
+        username = self.getParameter("client_id")
+        password = self.getParameter("password")
+
+        #from the developer portal
+        client_id = self.getParameter("client_id")
+        client_secret = self.getParameter("client_secret")
+
+        req = requests.get('https://apiflowerpower.parrot.com/user/v1/authenticate',
+                           data={'grant_type': 'password',
+                                 'username': username,
+                                 'password': password,
+                                 'client_id': client_id,
+                                 'client_secret': client_secret,
+                                })
+        response = req.json()
+        #self.logger.info('Server response: \n {0}'.format(pformat(response)))
+
+        # Get authorization token from response
+        global flowerpower_access_token
+        flowerpower_access_token = response['access_token']
+
+        self.logger.info("Connected!!.")
+        self.onStopped()
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onStopped() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Parameter name="client_id" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="5" />
+                            <Parameter name="client_secret" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="password" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" password="1" tooltip="" id="7" />
+                        </Box>
+                        <Box name="FlowerPower GET" id="4" localization="8" tooltip="This box contains a basic python script and can be used to create any python script box you would like.&#x0A;&#x0A;To edit its script, double-click on it." x="385" y="36">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        #put initialization code here
+        pass
+
+    def onUnload(self):
+        #put clean-up code here
+        pass
+
+    def onInput_onStart(self):
+        import requests, json, time
+
+        from pprint import pformat  # here only for aesthetic
+
+        global flowerpower_access_token
+
+        headers={'Authorization': "Bearer %s" % str(flowerpower_access_token)}
+
+        self.logger.info("flowerpower_access_token:" + str(flowerpower_access_token))
+        # Set your own authentication token
+
+        req = requests.get('https://apiflowerpower.parrot.com/sensor_data/v3/sync',headers=headers)
+
+        response = req.json()
+
+        sensor_serial = self.getParameter("sensor_serial")
+
+        locations = response["locations"]
+        location_identifier = None
+        for l in locations:
+            if sensor_serial == str(l["sensor_serial"]):
+                location_identifier = l["location_identifier"]
+                break
+
+        if location_identifier == None:
+            self.logger.info("sensor_serial not found!")
+            self.onFail("sensor_serial not found!")
+            return
+
+        ctime = time.time()
+
+        ftime_fmt = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(ctime - 60*60*24))
+        ttime_fmt = time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime(ctime))
+
+        self.logger.info("%s - %s" % (ftime_fmt, ttime_fmt))
+        req = requests.get('https://apiflowerpower.parrot.com/sensor_data/v2/sample/location/' + location_identifier,headers=headers, params={'from_datetime_utc': ftime_fmt,
+            'to_datetime_utc': ttime_fmt})
+
+        response = req.json()
+        self.logger.info('========> Server response: \n {0}'.format(pformat(response)))
+
+        self.onStopped(json.dumps(response))
+
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onStopped() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="3" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Output name="onFail" type="1" type_size="1" nature="1" inner="0" tooltip="" id="5" />
+                            <Parameter name="sensor_serial" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Comment" id="5" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="231" y="404">
+                            <bitmap>media/images/box/box-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("このサンプルは requests モジュールを必要とします。\n\nディレクトリ FlowerPowerSamples 配下で次を実行し、モジュールをプロジェクトに取り込みます\n\npip install requests --target ./lib --no-compile\n")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[このサンプルは requests モジュールを必要とします。
+
+ディレクトリ FlowerPowerSamples 配下で次を実行し、モジュールをプロジェクトに取り込みます
+
+pip install requests --target ./lib --no-compile
+]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                        </Box>
+                        <Box name="Comment (1)" id="1" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="64" y="132">
+                            <bitmap>media/images/box/box-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("FlowrPower認証は、アプリ内で１回だけ実行してください。\n\nプロパティーに API 登録を行った際の各情報を入力。登録は次から\nhttps://apiflowerpower.parrot.com/api_access/signup")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[FlowrPower認証は、アプリ内で１回だけ実行してください。
+
+プロパティーに API 登録を行った際の各情報を入力。登録は次から
+https://apiflowerpower.parrot.com/api_access/signup]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                        </Box>
+                        <Box name="Comment (2)" id="6" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="325" y="136">
+                            <bitmap>media/images/box/box-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("プロパティー sensor_serial に該当センサーのシリアルを設定\n \nFlowrPower GET は過去１日分のセンサーデータを出力します。期間取得する情報などは中のスクリプトを任意に書き換えて対応してください。\n")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[プロパティー sensor_serial に該当センサーのシリアルを設定
+ 
+FlowrPower GET は過去１日分のセンサーデータを出力します。期間取得する情報などは中のスクリプトを任意に書き換えて対応してください。
+]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                        </Box>
+                        <Link inputowner="3" indexofinput="2" outputowner="4" indexofoutput="4" />
+                        <Link inputowner="2" indexofinput="2" outputowner="0" indexofoutput="2" />
+                    </Diagram>
+                </BehaviorKeyframe>
+            </BehaviorLayer>
+        </Timeline>
+    </Box>
+</ChoregrapheProject>
