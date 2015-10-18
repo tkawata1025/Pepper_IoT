@@ -347,6 +347,38 @@
                             <Output name="onFail" type="3" type_size="1" nature="1" inner="0" tooltip="" id="7" />
                             <Parameter name="IP Address" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="8" />
                         </Box>
+                        <Box name="Comment" id="6" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="568" y="203">
+                            <bitmap>media/images/box/box-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("iRemoconのと連携サンプル\n\nプロパティー IP Adress に iRemocon の IPアドレスを設定、\n\n（IPアドレスはスマートフォンアプリ iRemoconWiFi から行います）\n\nまた iRemocon 学習 は学習させるリモコンコードのコード名（任意、勝手に決めていい）を、 iRemocon 送信ボックスは学習済みの送りたいコード名をボックスプロパティーで設定します。\n\niRemocon について詳しくは\nhttp://i-remocon.com/\n\n\n")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[iRemoconのと連携サンプル
+
+プロパティー IP Adress に iRemocon の IPアドレスを設定、
+
+（IPアドレスはスマートフォンアプリ iRemoconWiFi から行います）
+
+また iRemocon 学習 は学習させるリモコンコードのコード名（任意、勝手に決めていい）を、 iRemocon 送信ボックスは学習済みの送りたいコード名をボックスプロパティーで設定します。
+
+iRemocon について詳しくは
+http://i-remocon.com/
+
+
+]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                        </Box>
                         <Link inputowner="2" indexofinput="2" outputowner="1" indexofoutput="5" />
                         <Link inputowner="2" indexofinput="2" outputowner="3" indexofoutput="5" />
                         <Link inputowner="2" indexofinput="2" outputowner="4" indexofoutput="5" />
