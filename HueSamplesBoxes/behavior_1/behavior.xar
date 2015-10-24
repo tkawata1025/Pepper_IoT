@@ -78,7 +78,7 @@ class MyClass(GeneratedClass):
                             <Parameter name="light IDs" inherits_from_parent="0" content_type="3" value="1;2;3" default_value="" custom_choice="0" tooltip="点灯/消灯するライトの ID を指定。複数指定する場合 ; 区切りで" id="6" />
                             <Parameter name="On" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="" id="7" />
                         </Box>
-                        <Box name="Comment (1)" id="5" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="63" y="318">
+                        <Box name="Comment (1)" id="5" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="937" y="60">
                             <bitmap>media/images/box/box-script.png</bitmap>
                             <script language="4">
                                 <content>
@@ -88,12 +88,16 @@ class MyClass(GeneratedClass):
 		GeneratedClass.__init__(self)
 
 	def onInput_onStart(self):
-		self.onStopped("このサンプルは requests モジュールを必要とします。\n\nディレクトリ PepperHueSampleBoxes 配下で次を実行し、モジュールをプロジェクトに取り込みます\n\npip install requests --target ./lib --no-compile\n")]]>
+		self.onStopped("＊＊＊＊＊＊＊＊\nバーチャルロボットで実行する場合\n＊＊＊＊＊＊＊＊\n\nこのサンプルは requests モジュールを必要とします。\n\nディレクトリ PepperHueSampleBoxes 配下で次を実行し、モジュールをプロジェクトに取り込みます\n\npip install requests --target ./lib --no-compile\n")]]>
 </content>
                             </script>
                             <pluginContent>
                                 <text>
-                                    <![CDATA[このサンプルは requests モジュールを必要とします。
+                                    <![CDATA[＊＊＊＊＊＊＊＊
+バーチャルロボットで実行する場合
+＊＊＊＊＊＊＊＊
+
+このサンプルは requests モジュールを必要とします。
 
 ディレクトリ PepperHueSampleBoxes 配下で次を実行し、モジュールをプロジェクトに取り込みます
 
@@ -162,7 +166,8 @@ class MyClass(GeneratedClass):
             hueUsername = self.preference.getValue("com.hatenablog.tkawata", "hue/username")
             userNameOverWrite = True
 
-        for retry in range(1,2):
+        self.logger.info(hueIPAddr)
+        for retry in range(1,3):
             if hueIPAddr == None or len(hueIPAddr) == 0:
                 internalipaddress = requests.get("https://www.meethue.com/api/nupnp", timeout=10,verify=False)
                 if internalipaddress != None:
@@ -196,7 +201,7 @@ class MyClass(GeneratedClass):
             self.preference.setValue("com.hatenablog.tkawata", "hue/ipaddr", hueIPAddr)
         self.memory.insertData("hue/ipaddr", hueIPAddr)
 
-        for retry in range(1,2):
+        for retry in range(1,3):
             r = requests.get("http://%s/api/%s/config" % (hueIPAddr,hueUsername))
             j = r.json()
             self.logger.info(str(r.content))
@@ -241,17 +246,10 @@ class MyClass(GeneratedClass):
                                                 <Output name="onStopped" type="3" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
                                                 <Output name="onErrorLinkButton" type="1" type_size="1" nature="1" inner="0" tooltip="最初のブジッジ設定時、Hue ブジッジのリンクボタンを押していない時発生" id="5" />
                                                 <Output name="onNoHueBridgeFound" type="1" type_size="1" nature="1" inner="0" tooltip="" id="6" />
-                                                <Parameter name="HUE Bridge IPAddr" inherits_from_parent="0" content_type="3" value="192.168.31.203" default_value="" custom_choice="0" tooltip="" id="7" />
-                                                <Parameter name="authorized user id" inherits_from_parent="0" content_type="3" value="22458dc4157ba6e2311b2bcf19d48bbf" default_value="" custom_choice="0" tooltip="" id="8" />
-                                                <Parameter name="light ID" inherits_from_parent="0" content_type="1" value="1" default_value="0" min="0" max="100" tooltip="" id="9" />
-                                                <Parameter name="On" inherits_from_parent="0" content_type="0" value="1" default_value="1" tooltip="" id="10" />
-                                                <Parameter name="sat" inherits_from_parent="0" content_type="1" value="255" default_value="255" min="0" max="255" tooltip="" id="11" />
-                                                <Parameter name="bri" inherits_from_parent="0" content_type="1" value="255" default_value="255" min="0" max="255" tooltip="" id="12" />
-                                                <Parameter name="hue" inherits_from_parent="0" content_type="1" value="10000" default_value="10000" min="0" max="65535" tooltip="" id="13" />
-                                                <Parameter name="HUE Bridge IP Address (option)" inherits_from_parent="1" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="14" />
-                                                <Parameter name="HUE Bridge username (option)" inherits_from_parent="1" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="15" />
+                                                <Parameter name="HUE Bridge IP Address (option)" inherits_from_parent="1" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" />
+                                                <Parameter name="HUE Bridge username (option)" inherits_from_parent="1" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="8" />
                                             </Box>
-                                            <Box name="Say" id="2" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="451" y="315">
+                                            <Box name="Say" id="2" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="453" y="188">
                                                 <bitmap>media/images/box/interaction/say.png</bitmap>
                                                 <script language="4">
                                                     <content>
@@ -603,7 +601,7 @@ class MyClass(GeneratedClass):
                                                 </Timeline>
                                                 <Resource name="Head-sequence" type="Lock" timeout="0" />
                                             </Box>
-                                            <Box name="Excited" id="4" localization="8" tooltip="ID : #02A 0003&#x0A;&#x0A;===================&#x0A;&#x0A;Tags : &#x0A;- Excited" x="451" y="168">
+                                            <Box name="Excited" id="4" localization="8" tooltip="ID : #02A 0003&#x0A;&#x0A;===================&#x0A;&#x0A;Tags : &#x0A;- Excited" x="460" y="309">
                                                 <bitmap>media/images/box/movement/move.png</bitmap>
                                                 <script language="4">
                                                     <content>
@@ -982,6 +980,215 @@ class MyClass(GeneratedClass):
                                                 </Timeline>
                                                 <Resource name="Speech" type="Lock" timeout="0" />
                                             </Box>
+                                            <Box name="Say (2)" id="1" localization="8" tooltip="Say some text. Note that you must open the box to enter the text." x="457" y="415">
+                                                <bitmap>media/images/box/interaction/say.png</bitmap>
+                                                <script language="4">
+                                                    <content>
+                                                        <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.bIsRunning = False
+
+    def onUnload(self):
+        self.bIsRunning = False
+
+    def onInput_onStart(self):
+        self.bIsRunning = True
+
+    def onInput_onStop(self):
+        if( self.bIsRunning ):
+            self.onUnload()
+            self.onStopped()]]>
+</content>
+                                                </script>
+                                                <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                                                <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                                                <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                                                <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished or stopped." id="4" />
+                                                <Parameter name="Voice shaping (%)" inherits_from_parent="0" content_type="1" value="135" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.&#x0A;&#x0A;!Warning! This feature is not available yet in Japanese, Chinese and Korean.' id="5" />
+                                                <Parameter name="Speed (%)" inherits_from_parent="0" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed.&#x0A;&#x0A;!Warning! This feature is not available yet in Japanese, Chinese and Korean." id="6" />
+                                                <Timeline enable="0">
+                                                    <BehaviorLayer name="behavior_layer1">
+                                                        <BehaviorKeyframe name="keyframe1" index="1">
+                                                            <Diagram>
+                                                                <Box name="Say Text" id="2" localization="8" tooltip="Say the text received on its input." x="422" y="65">
+                                                                    <bitmap>media/images/box/interaction/say.png</bitmap>
+                                                                    <script language="4">
+                                                                        <content>
+                                                                            <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                                                                    </script>
+                                                                    <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                                                                    <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                                                                    <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                                                                    <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                                                                    <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                                                                    <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                                                                </Box>
+                                                                <Box name="Localized Text" id="5" localization="8" tooltip="Send on the output the text associated with the robot&apos;s current voice language.&#x0A;You can display and edit the text associated with any language by&#x0A;selecting the language in the combobox.&#x0A;&#x0A;!!Warning!! The text sent on the output is NOT the displayed one but the one&#x0A;associated with the robot&apos;s current voice language." plugin="localizationbox_plugin" x="114" y="68">
+                                                                    <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                                                                    <script language="4">
+                                                                        <content>
+                                                                            <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		try: # disable autoBind
+			GeneratedClass.__init__(self, False)
+		except TypeError: # if NAOqi < 1.14
+			GeneratedClass.__init__( self )
+
+		self.tts = ALProxy("ALTextToSpeech")
+		self.sentences = {
+			"Arabic" : " مرحبا ",
+			"Czech" : " Ahoj ",
+			"Danish" : " Hej ",
+			"German" : " Hallo ",
+			"Greek" : "  ",
+			"English" : " Hello ",
+			"Spanish" : " Hola ",
+			"Finnish" : " Hei ",
+			"French" : " Bonjour ",
+			"Italian" : " Ciao ",
+			"Japanese" : " ヒューブリッジが見つかりませんでした ",
+			"Korean" : " 안녕하세요 ",
+			"Dutch" : " Hallo ",
+			"Norwegian" : "  ",
+			"Polish" : " Cześć ",
+			"Brazilian" : " Olá ",
+			"Portuguese" : " Olá ",
+			"Russian" : " Привет ",
+			"Swedish" : " Hallå ",
+			"Turkish" : " Merhaba ",
+			"Chinese" : " 你好 "
+		}
+
+	def onInput_onStart(self):
+		sDefaultLang = self.tts.getLanguage()
+		self.onStopped(self.sentences[sDefaultLang])]]>
+</content>
+                                                                    </script>
+                                                                    <pluginContent>
+                                                                        <arabic>
+                                                                            <![CDATA[مرحبا]]>
+</arabic>
+                                                                        <czech>
+                                                                            <![CDATA[Ahoj]]>
+</czech>
+                                                                        <danish>
+                                                                            <![CDATA[Hej]]>
+</danish>
+                                                                        <german>
+                                                                            <![CDATA[Hallo]]>
+</german>
+                                                                        <greek>
+                                                                            <![CDATA[]]>
+</greek>
+                                                                        <english>
+                                                                            <![CDATA[Hello]]>
+</english>
+                                                                        <spanish>
+                                                                            <![CDATA[Hola]]>
+</spanish>
+                                                                        <finnish>
+                                                                            <![CDATA[Hei]]>
+</finnish>
+                                                                        <french>
+                                                                            <![CDATA[Bonjour]]>
+</french>
+                                                                        <italian>
+                                                                            <![CDATA[Ciao]]>
+</italian>
+                                                                        <japanese>
+                                                                            <![CDATA[ヒューブリッジが見つかりませんでした]]>
+</japanese>
+                                                                        <korean>
+                                                                            <![CDATA[안녕하세요]]>
+</korean>
+                                                                        <dutch>
+                                                                            <![CDATA[Hallo]]>
+</dutch>
+                                                                        <norwegian>
+                                                                            <![CDATA[]]>
+</norwegian>
+                                                                        <polish>
+                                                                            <![CDATA[Cześć]]>
+</polish>
+                                                                        <brazilian>
+                                                                            <![CDATA[Olá]]>
+</brazilian>
+                                                                        <portuguese>
+                                                                            <![CDATA[Olá]]>
+</portuguese>
+                                                                        <russian>
+                                                                            <![CDATA[Привет]]>
+</russian>
+                                                                        <swedish>
+                                                                            <![CDATA[Hallå]]>
+</swedish>
+                                                                        <turkish>
+                                                                            <![CDATA[Merhaba]]>
+</turkish>
+                                                                        <chinese>
+                                                                            <![CDATA[你好]]>
+</chinese>
+                                                                        <language>10</language>
+                                                                    </pluginContent>
+                                                                    <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                                                                    <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Data is sent on the output when this input is stimulated." id="2" />
+                                                                    <Output name="onStopped" type="3" type_size="1" nature="1" inner="0" tooltip="Data sent when asked." id="3" />
+                                                                </Box>
+                                                                <Link inputowner="0" indexofinput="4" outputowner="2" indexofoutput="4" />
+                                                                <Link inputowner="5" indexofinput="2" outputowner="0" indexofoutput="2" />
+                                                                <Link inputowner="2" indexofinput="2" outputowner="5" indexofoutput="3" />
+                                                            </Diagram>
+                                                        </BehaviorKeyframe>
+                                                    </BehaviorLayer>
+                                                </Timeline>
+                                                <Resource name="Speech" type="Lock" timeout="0" />
+                                            </Box>
                                             <Link inputowner="12" indexofinput="2" outputowner="0" indexofoutput="2" />
                                             <Link inputowner="3" indexofinput="2" outputowner="2" indexofoutput="4" />
                                             <Link inputowner="3" indexofinput="3" outputowner="3" indexofoutput="9" />
@@ -989,10 +1196,11 @@ class MyClass(GeneratedClass):
                                             <Link inputowner="6" indexofinput="2" outputowner="12" indexofoutput="4" />
                                             <Link inputowner="0" indexofinput="5" outputowner="6" indexofoutput="4" />
                                             <Link inputowner="4" indexofinput="2" outputowner="12" indexofoutput="6" />
-                                            <Link inputowner="0" indexofinput="6" outputowner="12" indexofoutput="6" />
                                             <Link inputowner="2" indexofinput="2" outputowner="12" indexofoutput="5" />
                                             <Link inputowner="12" indexofinput="2" outputowner="3" indexofoutput="9" />
                                             <Link inputowner="12" indexofinput="2" outputowner="0" indexofoutput="3" />
+                                            <Link inputowner="1" indexofinput="2" outputowner="12" indexofoutput="6" />
+                                            <Link inputowner="0" indexofinput="5" outputowner="1" indexofoutput="4" />
                                         </Diagram>
                                     </BehaviorKeyframe>
                                 </BehaviorLayer>
@@ -1265,7 +1473,7 @@ class MyClass(GeneratedClass):
                             <Output name="output_2" type="0" type_size="1" nature="2" inner="0" tooltip="This IO has been automatically added by box. Read box tooltip for more information." id="6" />
                             <Output name="output_3" type="0" type_size="1" nature="2" inner="0" tooltip="このIOはボックスにより自動で追加されました。詳細はボックスのツールチップをご覧ください。" id="7" />
                         </Box>
-                        <Box name="Comment" id="4" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="292" y="323">
+                        <Box name="Comment" id="4" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="50" y="84">
                             <bitmap>media/images/box/box-script.png</bitmap>
                             <script language="4">
                                 <content>
@@ -1287,7 +1495,7 @@ HUE 設定サンプルボックスは HUEの設定をするサンプル実装ボ
                             </pluginContent>
                             <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
                         </Box>
-                        <Box name="Text Edit" id="7" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="58" y="99">
+                        <Box name="Text Edit" id="7" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="60" y="347">
                             <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
                             <script language="4">
                                 <content>
